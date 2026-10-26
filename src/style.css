@@ -134,3 +134,18 @@ html::-webkit-scrollbar,body::-webkit-scrollbar,#app::-webkit-scrollbar,.app-she
 .term-quiz-result>p{color:#687890;font-size:16px}
 .term-quiz-result .result-dots{margin:22px 0 37px}
 .term-quiz-result .primary{display:flex;align-items:center;justify-content:center;gap:8px}
+
+/* Shared Firebase leaderboard */
+.ranking-hero small{display:inline-block;background:#d7eaff;color:#2374dd;border-radius:9px;padding:2px 6px;font-size:10px;margin-left:6px;vertical-align:middle}
+.leaderboard-list{border-top:1px solid #e5ebf2}
+.leaderboard-list>div{display:flex;align-items:center;gap:10px;min-height:64px;border-bottom:1px solid #e5ebf2;padding:8px 4px}
+.leaderboard-list>div.mine{background:#edf6ff;border-radius:9px;padding-left:8px;padding-right:8px}
+.leaderboard-position{width:24px;text-align:center;color:#5e6f88;font-weight:800}
+.leaderboard-list>div:nth-child(-n+3) .leaderboard-position{color:#3182f6}
+.leaderboard-avatar{width:35px;height:35px;display:grid;place-items:center;background:#e8f3ff;color:#3182f6;border-radius:50%;flex:none}
+.leaderboard-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px}
+.leaderboard-name small{color:#3182f6;background:#dceeff;border-radius:8px;padding:1px 5px;margin-left:5px;font-size:10px}
+.leaderboard-list strong{font-size:15px;white-space:nowrap}
+.leaderboard-outside{display:flex;align-items:center;gap:12px;padding:15px 10px;margin-top:12px;background:#eaf4ff;border-radius:10px;font-size:14px}
+.leaderboard-outside strong{color:#3182f6}
+.leaderboard-outside span{margin-left:auto;font-weight:800}

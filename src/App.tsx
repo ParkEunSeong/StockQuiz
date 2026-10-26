@@ -5,6 +5,7 @@ import rawQuestions from './data/questions.json'
 import PencilFeedback, { PencilOverlay } from './PencilFeedback'
 import Glossary from './Glossary'
 import TermQuiz from './TermQuiz'
+import { useLeaderboard } from './useLeaderboard'
 
 type Difficulty = '하' | '중' | '상'
 type Question = { id: string; category: string; difficulty: Difficulty; kind: '4지선다' | 'OX'; prompt: string; options: string[]; answer: number; explanation: string; reference: string }
@@ -54,6 +55,7 @@ function App() {
   const [reviewArea, setReviewArea] = useState('전체')
   const [rankingTab, setRankingTab] = useState<'week' | 'all'>('week')
   const [termQuizCategory, setTermQuizCategory] = useState('all')
+  const leaderboard = useLeaderboard(store.sessions, rankingTab, page === 'ranking')
 
   const setAndSave = (update: (current: Store) => Store) => {
     setStore(current => {
@@ -219,7 +221,7 @@ function App() {
       </>}
 
       {page === 'my' && <>
-        <h1>내 학습</h1><div className="profile"><span><UserRound size={32}/></span><div><strong>차근차근 배우는 중</strong><p>한 문제씩, 꾸준히 배우는 중</p></div></div>
+        <h1>내 학습</h1><div className="profile"><span><UserRound size={32}/></span><div><strong>{leaderboard.identity?.nickname || '차근차근 배우는 중'}</strong><p>한 문제씩, 꾸준히 배우는 중</p></div></div>
         <h3 className="field-title">이번 주 학습</h3><div className="my-stats"><div><span>푼 문제</span><strong>{weekCount}</strong></div><div><span>맞힌 문제</span><strong>{weekCorrect}</strong></div><div><span>정답률</span><strong>{weekCount?Math.round(weekCorrect/weekCount*100):0}%</strong></div></div>
         <button className="weekly-link" onClick={()=>navigate('ranking')}><BarChart3 size={22}/><strong>이번 주 학습 점수</strong><span>{weekCorrect*20}점</span><ChevronRight size={18}/></button>
         <h3 className="field-title">분야별 학습 <small>정답 / 풀이</small></h3><div className="category-stats">{statsByArea.map((item,i)=><div key={item.name}><span className="round-icon">{i===0?<BookOpen size={21}/>:<BarChart3 size={21}/>}</span><span className="stat-label"><strong>{item.name}</strong><small>{item.total}개 문항</small></span><span>{item.correct} / {item.solved}</span></div>)}</div>
@@ -230,10 +232,12 @@ function App() {
       </>}
 
       {page === 'ranking' && <>
-        <h1>학습 점수</h1><p className="subtitle">한 문제씩 쌓은 실력이 보여요</p><div className="segmented rank-segment"><button className={rankingTab==='week'?'active':''} onClick={()=>setRankingTab('week')}>이번 주</button><button className={rankingTab==='all'?'active':''} onClick={()=>setRankingTab('all')}>전체</button></div>
-        <div className="ranking-hero"><span>내 {rankingTab==='week'?'주간':'전체'} 점수</span><strong>{rankingTab==='week'?weekCorrect*20:store.sessions.reduce((n,s)=>n+s.correct*20,0)}점</strong><p>{rankingTab==='week'?weekCorrect:store.sessions.reduce((n,s)=>n+s.correct,0)}문제 정답</p></div>
-        <h3 className="field-title">최근 학습 기록</h3>{store.sessions.length?<div className="history-list">{[...store.sessions].reverse().slice(0,10).map((s,i)=><div key={i}><span>{new Date(s.date).toLocaleDateString('ko-KR',{month:'long',day:'numeric'})}</span><strong>{s.correct*20}점</strong><small>{s.correct}/{s.count} 정답</small></div>)}</div>:<div className="empty-state"><BarChart3 size={39}/><strong>아직 기록이 없어요</strong><p>첫 퀴즈를 풀면 점수가 쌓여요.</p></div>}
-        <p className="ranking-note">다른 사용자와의 순위는 계정·서버 연동 후 제공할 수 있어요.</p>
+        <h1>랭킹</h1><p className="subtitle">한 문제씩 쌓은 점수를 함께 확인해요</p><div className="segmented rank-segment"><button className={rankingTab==='week'?'active':''} onClick={()=>setRankingTab('week')}>이번 주</button><button className={rankingTab==='all'?'active':''} onClick={()=>setRankingTab('all')}>전체</button></div>
+        <div className="ranking-hero"><span>{leaderboard.identity?.nickname || '내 점수'} {leaderboard.identity?.isTossProfile && <small>토스 닉네임</small>}</span><strong>{leaderboard.myRank ? `${leaderboard.myRank}위` : '순위 대기'}</strong><p>{leaderboard.myScore}점 · {rankingTab === 'week' ? '이번 주' : '전체'} 기록</p></div>
+        <div className="section-title"><h3>상위 순위</h3><button onClick={leaderboard.refresh}>새로고침 <RotateCcw size={15}/></button></div>
+        {leaderboard.status === 'loading' ? <div className="empty-state"><BarChart3 size={39}/><strong>랭킹을 불러오는 중이에요</strong></div> : leaderboard.status === 'error' ? <div className="empty-state"><CircleHelp size={39}/><strong>랭킹을 불러오지 못했어요</strong><p>연결 상태를 확인하고 다시 시도해 주세요.</p><button className="secondary" onClick={leaderboard.refresh}>다시 시도</button></div> : leaderboard.entries.length ? <div className="leaderboard-list">{leaderboard.entries.map(item => <div className={item.id === leaderboard.identity?.uid ? 'mine' : ''} key={item.id}><span className="leaderboard-position">{item.rank}</span><span className="leaderboard-avatar"><UserRound size={20}/></span><span className="leaderboard-name">{item.nickname}{item.id === leaderboard.identity?.uid && <small>나</small>}</span><strong>{item.points.toLocaleString('ko-KR')}점</strong></div>)}</div> : <div className="empty-state"><BarChart3 size={39}/><strong>아직 등록된 점수가 없어요</strong><p>퀴즈를 풀면 랭킹에 참여할 수 있어요.</p></div>}
+        {leaderboard.status === 'ready' && leaderboard.myRank && !leaderboard.entries.some(item => item.id === leaderboard.identity?.uid) && <div className="leaderboard-outside">내 순위 <strong>{leaderboard.myRank}위</strong><span>{leaderboard.myScore.toLocaleString('ko-KR')}점</span></div>}
+        {!leaderboard.identity?.isTossProfile && <p className="ranking-note">토스 게임 프로필이 없으면 자동 닉네임으로 표시돼요.</p>}
       </>}
     </main>
 
