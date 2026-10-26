@@ -23,3 +23,47 @@
 .pencil-overlay-cross path{stroke-width:4.4}
 .pencil-overlay-cross path+path{animation-delay:.55s}
 @media(prefers-reduced-motion:reduce){.pencil-overlay path{animation:none;stroke-dashoffset:0}}
+
+/* The learning picker fits in one viewport; other long screens remain scrollable. */
+html,body,#app,.app-shell{scrollbar-width:none}
+html::-webkit-scrollbar,body::-webkit-scrollbar,#app::-webkit-scrollbar,.app-shell::-webkit-scrollbar{display:none}
+.learn-screen{height:100dvh;min-height:0;overflow:hidden;padding-bottom:0}
+.learn-screen .topbar{height:64px}
+.learn-main{height:calc(100dvh - 132px);overflow:hidden;padding:4px 22px 8px}
+.learn-main h1{font-size:clamp(21px,6.8vw,29px);line-height:1.25;white-space:nowrap;margin:7px 0 8px}
+.learn-main .field-title{font-size:15px;line-height:1.3;margin:10px 0 5px}
+.learn-main .field-list{gap:5px}
+.learn-main .field-card{min-height:52px;padding:5px 10px;gap:11px}
+.learn-main .field-card.selected{padding:4px 9px}
+.learn-main .field-icon{width:37px;height:37px;font-size:21px}
+.learn-main .field-card strong{font-size:14px}
+.learn-main .field-card small{font-size:11px;line-height:1.2}
+.learn-main .radio{width:20px;height:20px}
+.learn-main .segmented{margin:0 0 4px;padding:2px}
+.learn-main .segmented button{height:36px}
+.learn-main .category-select{height:40px;padding:8px 12px}
+.learn-main .selection-summary{margin:8px 0;padding:6px}
+.learn-main .primary{min-height:48px}
+@media(max-height:720px){
+  .learn-main .field-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+  .learn-main .field-card:first-child{grid-column:1/-1}
+  .learn-main .field-card{min-height:44px;padding:4px 7px;gap:7px}
+  .learn-main .field-card.selected{padding:3px 6px}
+  .learn-main .field-icon{width:30px;height:30px;font-size:18px}
+  .learn-main .field-card small{display:none}
+  .learn-main .field-title{margin:8px 0 4px}
+  .learn-main .selection-summary{margin:6px 0}
+}
+@media(max-height:620px){
+  .learn-screen .topbar{height:56px}
+  .learn-main{height:calc(100dvh - 124px);padding-top:0}
+  .learn-main h1{margin:2px 0 5px}
+  .learn-main .field-title{margin:5px 0 3px}
+  .learn-main .field-list{gap:3px}
+  .learn-main .field-card{min-height:40px}
+  .learn-main .field-icon{width:26px;height:26px}
+  .learn-main .segmented button{height:32px}
+  .learn-main .category-select{height:35px;padding:5px 10px}
+  .learn-main .selection-summary{margin:4px 0;padding:4px}
+  .learn-main .primary{min-height:42px}
+}

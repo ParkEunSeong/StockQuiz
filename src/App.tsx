@@ -138,13 +138,13 @@ function App() {
   })
   const lastSession = store.sessions.at(-1)
 
-  return <div className="app-shell">
+  return <div className={`app-shell ${page === 'learn' ? 'learn-screen' : ''}`}>
     <header className="topbar">
       {page === 'home' || page === 'learn' || page === 'ranking' || page === 'my' ? <div className="brand"><span className="brand-mark"><BarChart3 size={23} strokeWidth={3} /></span><strong>주식 한입</strong></div> : <button className="icon-button" aria-label="뒤로 가기" onClick={back}><ArrowLeft size={26}/></button>}
       <div className="top-actions"><span className="top-dot">•••</span><button className="icon-button close" aria-label="앱 닫기" onClick={closeApp}><X size={25}/></button></div>
     </header>
 
-    <main className={page === 'quiz' || page === 'explanation' ? 'main quiz-main' : 'main'}>
+    <main className={`main ${page === 'quiz' || page === 'explanation' ? 'quiz-main' : ''} ${page === 'learn' ? 'learn-main' : ''}`}>
       {page === 'home' && <>
         <div className="eyebrow">하루 5문제, 차근차근</div>
         <h1>오늘도 한 문제만큼<br/>더 똑똑해져요</h1>
@@ -162,7 +162,7 @@ function App() {
       </>}
 
       {page === 'learn' && <>
-        <h1>무엇부터<br/>배워볼까요?</h1><p className="subtitle">관심 있는 분야를 골라보세요</p>
+        <h1>무엇부터 맞춰볼까요?</h1>
         <h3 className="field-title">학습 분야</h3>
         <div className="field-list">{['전체 분야','주식 기초','기업 분석','차트·캔들','투자 전략'].map((name,i) => <button key={name} className={`field-card ${area===name?'selected':''}`} onClick={() => { setArea(name); setCategory('전체 카테고리') }}><span className="field-icon">{i===0?'◎':i===1?'▤':i===2?'▥':i===3?'▮':'↗'}</span><span><strong>{name}</strong><small>{['40개 주제를 골고루','주식·배당·거래의 기본','재무제표와 기업 가치','시가·종가와 차트 이해','포트폴리오와 투자 방법'][i]}</small></span><span className={`radio ${area===name?'on':''}`}>{area===name&&<Check size={16}/>}</span></button>)}</div>
         <h3 className="field-title">난이도</h3><div className="segmented">{(['하','중','상'] as Difficulty[]).map((level,i)=><button key={level} className={difficulty===level?'active':''} onClick={()=>setDifficulty(level)}>{['기초','중급','고급'][i]}</button>)}</div>
