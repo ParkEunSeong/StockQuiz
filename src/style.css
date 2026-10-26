@@ -15,3 +15,11 @@
 .pencil-cross-shadow{animation-duration:.48s;animation-delay:.15s}
 @keyframes pencil-draw{to{stroke-dashoffset:0}}
 @media(prefers-reduced-motion:reduce){.pencil-feedback path{animation:none;stroke-dashoffset:0}}
+
+/* The large hand-drawn mark follows the height of each explanation. */
+.feedback-detail{position:relative;display:flow-root}
+.pencil-overlay{position:absolute;z-index:2;pointer-events:none;left:14%;top:-60px;width:78%;height:calc(100% + 120px);overflow:visible;color:#f02f2e}
+.pencil-overlay path{fill:none;stroke:currentColor;stroke-width:3.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:pencil-draw 1.2s .1s ease-in-out forwards}
+.pencil-overlay-cross path{stroke-width:4.4}
+.pencil-overlay-cross path+path{animation-delay:.55s}
+@media(prefers-reduced-motion:reduce){.pencil-overlay path{animation:none;stroke-dashoffset:0}}
