@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { ArrowLeft, ArrowRight, BarChart3, BookOpen, Bookmark, Check, CheckCircle2, ChevronRight, CircleHelp, Home, RotateCcw, TrendingUp, UserRound, X } from 'lucide-react'
 import { Screen } from '@apps-in-toss/web-framework'
 import rawQuestions from './data/questions.json'
+import PencilFeedback from './PencilFeedback'
 
 type Difficulty = '하' | '중' | '상'
 type Question = { id: string; category: string; difficulty: Difficulty; kind: '4지선다' | 'OX'; prompt: string; options: string[]; answer: number; explanation: string; reference: string }
@@ -180,7 +181,7 @@ function App() {
 
       {page === 'explanation' && session && lastAnswer && explainedQuestion && <>
         <div className="progress-label"><strong>{session.mode==='review'?'다시 풀기':'오늘의 챌린지'}</strong><span>{session.answers.length} <em>/ {session.ids.length}</em></span></div><div className="progress"><span style={{width:`${session.answers.length/session.ids.length*100}%`}}/></div>
-        <div className={`answer-heading ${lastAnswer.correct?'':'incorrect'}`}><span className="answer-symbol">{lastAnswer.correct?<Check size={25}/>:<X size={25}/>}</span><h1>{lastAnswer.correct?'정답이에요':'아쉬워요'}</h1><span className="point-chip">{lastAnswer.correct?'+20점':'다음에 맞혀요'}</span></div>
+        <div className={`answer-heading ${lastAnswer.correct?'':'incorrect'}`}><PencilFeedback correct={lastAnswer.correct}/><h1>{lastAnswer.correct?'정답이에요':'아쉬워요'}</h1><span className="point-chip">{lastAnswer.correct?'+20점':'다음에 맞혀요'}</span></div>
         <p className="answer-subtitle">{lastAnswer.correct?'하나 더 알게 되었어요.':'해설을 읽고 다시 도전해 보세요.'}</p>
         <h2 className="explain-question">{explainedQuestion.prompt}</h2>
         <div className="correct-option"><span className="option-letter">{explainedQuestion.kind==='OX'?explainedQuestion.options[explainedQuestion.answer]:String.fromCharCode(65+explainedQuestion.answer)}</span><strong>{explainedQuestion.options[explainedQuestion.answer]}</strong><span>정답</span></div>
