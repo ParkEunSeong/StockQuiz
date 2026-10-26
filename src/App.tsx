@@ -4,12 +4,13 @@ import { Screen } from '@apps-in-toss/web-framework'
 import rawQuestions from './data/questions.json'
 import PencilFeedback, { PencilOverlay } from './PencilFeedback'
 import Glossary from './Glossary'
+import TermQuiz from './TermQuiz'
 
 type Difficulty = '하' | '중' | '상'
 type Question = { id: string; category: string; difficulty: Difficulty; kind: '4지선다' | 'OX'; prompt: string; options: string[]; answer: number; explanation: string; reference: string }
 type RecordItem = { attempts: number; lastCorrect: boolean; correctCount: number; lastAt: string }
 type Session = { ids: string[]; answers: { id: string; choice: number; correct: boolean }[]; startedAt: number; mode: 'normal' | 'review' }
-type Page = 'home' | 'learn' | 'glossary' | 'quiz' | 'explanation' | 'result' | 'notebook' | 'my' | 'ranking'
+type Page = 'home' | 'learn' | 'glossary' | 'termQuiz' | 'quiz' | 'explanation' | 'result' | 'notebook' | 'my' | 'ranking'
 type Store = { records: Record<string, RecordItem>; saved: string[]; sessions: { date: string; correct: number; count: number; seconds: number }[] }
 
 const questions = rawQuestions as Question[]
@@ -52,6 +53,7 @@ function App() {
   const [reviewTab, setReviewTab] = useState<'wrong' | 'done' | 'saved'>('wrong')
   const [reviewArea, setReviewArea] = useState('전체')
   const [rankingTab, setRankingTab] = useState<'week' | 'all'>('week')
+  const [termQuizCategory, setTermQuizCategory] = useState('all')
 
   const setAndSave = (update: (current: Store) => Store) => {
     setStore(current => {
@@ -128,7 +130,7 @@ function App() {
   }
 
   function navigate(next: Page) { setPage(next); window.scrollTo(0, 0) }
-  function back() { navigate(page === 'quiz' || page === 'explanation' || page === 'result' ? 'learn' : 'home') }
+  function back() { navigate(page === 'termQuiz' ? 'glossary' : page === 'quiz' || page === 'explanation' || page === 'result' ? 'learn' : 'home') }
   function closeApp() { if (import.meta.env.DEV) { navigate('home'); return } void Screen.close().catch(() => navigate('home')) }
   const reviewList = useMemo(() => (reviewTab === 'wrong' ? wrongIds : reviewTab === 'done' ? doneIds : store.saved).filter(id => byId.has(id) && (reviewArea === '전체' || groupOf(byId.get(id)!.category) === reviewArea)), [reviewTab, reviewArea, store.records, store.saved])
   const statsByArea = ['주식 기초', '기업 분석', '차트·캔들', '투자 전략'].map(name => {
@@ -145,7 +147,7 @@ function App() {
       <div className="top-actions"><span className="top-dot">•••</span><button className="icon-button close" aria-label="앱 닫기" onClick={closeApp}><X size={25}/></button></div>
     </header>
 
-    <main className={`main ${page === 'quiz' || page === 'explanation' ? 'quiz-main' : ''} ${page === 'learn' ? 'learn-main' : ''}`}>
+    <main className={`main ${page === 'quiz' || page === 'explanation' || page === 'termQuiz' ? 'quiz-main' : ''} ${page === 'learn' ? 'learn-main' : ''}`}>
       {page === 'home' && <>
         <div className="eyebrow">하루 5문제, 차근차근</div>
         <h1>오늘도 한 문제만큼<br/>더 똑똑해져요</h1>
@@ -172,7 +174,8 @@ function App() {
         <button className="primary" onClick={()=>start()}>5문제 시작하기</button>
       </>}
 
-      {page === 'glossary' && <Glossary />}
+      {page === 'glossary' && <Glossary onStartQuiz={selectedCategory => { setTermQuizCategory(selectedCategory); navigate('termQuiz') }} />}
+      {page === 'termQuiz' && <TermQuiz categoryId={termQuizCategory} onExit={() => navigate('glossary')} />}
 
       {page === 'quiz' && session && activeQuestion && <>
         <div className="progress-label"><strong>{session.mode==='review'?'다시 풀기':'오늘의 챌린지'}</strong><span>{session.answers.length+1} <em>/ {session.ids.length}</em></span></div><div className="progress"><span style={{width:`${(session.answers.length+1)/session.ids.length*100}%`}}/></div>

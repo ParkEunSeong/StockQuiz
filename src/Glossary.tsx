@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { BookOpen, ChevronDown, Search, X } from 'lucide-react'
 import rawGlossary from './data/stock_terms.ko.min.json'
 
-type GlossaryTerm = {
+export type GlossaryTerm = {
   id: string
   term: string
   aliases: string[]
@@ -13,7 +13,9 @@ type GlossaryTerm = {
 
 type GlossaryCategory = { id: string; name: string; sortOrder: number }
 const glossary = rawGlossary as { categories: GlossaryCategory[]; terms: GlossaryTerm[] }
-const categories = [...glossary.categories].sort((a, b) => a.sortOrder - b.sortOrder)
+export const glossaryCategories = [...glossary.categories].sort((a, b) => a.sortOrder - b.sortOrder)
+export const glossaryTerms = glossary.terms
+const categories = glossaryCategories
 const categoryNames = new Map(categories.map(category => [category.id, category.name]))
 const terms = [...glossary.terms].sort((a, b) => a.term.localeCompare(b.term, 'ko'))
 const PAGE_SIZE = 40
@@ -22,7 +24,7 @@ function normalize(value: string) {
   return value.toLocaleLowerCase('ko').replace(/\s+/g, '')
 }
 
-export default function Glossary() {
+export default function Glossary({ onStartQuiz }: { onStartQuiz: (categoryId: string) => void }) {
   const [query, setQuery] = useState('')
   const [categoryId, setCategoryId] = useState('all')
   const [expandedId, setExpandedId] = useState<string | null>(null)
@@ -43,6 +45,7 @@ export default function Glossary() {
       <div className="glossary-emblem"><BookOpen size={23} /></div>
       <div><h1>주식 용어 사전</h1><p>헷갈리는 용어를 바로 찾아보세요</p></div>
     </div>
+    <button className="glossary-quiz-entry" onClick={() => onStartQuiz(categoryId)}><span className="glossary-quiz-badge">O/X</span><span><strong>주식 용어 O/X 퀴즈</strong><small>{categoryId === 'all' ? '전체 분야' : categoryNames.get(categoryId)}에서 5문제 풀기</small></span><span aria-hidden="true">›</span></button>
     <label className="glossary-search">
       <Search size={21} aria-hidden="true" />
       <input type="search" aria-label="주식 용어 검색" placeholder="용어 또는 뜻을 검색해 보세요" value={query} onChange={event => { setQuery(event.target.value); setVisibleCount(PAGE_SIZE); setExpandedId(null) }} />

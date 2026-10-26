@@ -105,3 +105,32 @@ html::-webkit-scrollbar,body::-webkit-scrollbar,#app::-webkit-scrollbar,.app-she
 .glossary-empty svg{color:#3182f6;margin-bottom:10px}
 .glossary-empty strong{color:#263347}
 .glossary-empty p{font-size:13px}
+
+/* Five-question O/X practice from the glossary. */
+.glossary-quiz-entry{width:100%;display:flex;align-items:center;gap:13px;text-align:left;border:0;border-radius:14px;background:linear-gradient(105deg,#eaf4ff,#f4f9ff);padding:14px;margin:0 0 20px;color:#162236}
+.glossary-quiz-badge{display:grid;place-items:center;flex:none;width:49px;height:49px;border-radius:13px;background:#3182f6;color:#fff;font-size:16px;font-weight:900}
+.glossary-quiz-entry>span:nth-child(2){flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.glossary-quiz-entry strong{font-size:16px}
+.glossary-quiz-entry small{font-size:12px;color:#64758b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.glossary-quiz-entry>span:last-child{font-size:26px;color:#3182f6;line-height:1}
+.term-quiz-meta{font-size:13px;color:#3182f6;font-weight:800;margin-top:20px}
+.term-quiz-title{font-size:29px!important;line-height:1.35!important;word-break:keep-all;margin:14px 0 24px!important}
+.term-quiz-statement{border-radius:15px;background:#f4f7fb;padding:22px 20px;font-size:18px;font-weight:700;line-height:1.65;word-break:keep-all;color:#26364b}
+.term-ox-options{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:25px 0 18px}
+.term-ox-options button{height:112px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;border:2px solid #dbe5f0;border-radius:14px;background:#fff;color:#66778f;font-size:40px;font-weight:900}
+.term-ox-options button.selected{border-color:#3182f6;background:#eaf4ff;color:#1975f0}
+.term-ox-options small{font-size:13px;font-weight:700}
+.term-quiz-help{text-align:center;color:#78879a;font-size:13px;margin:0 0 13px}
+.term-quiz-feedback{margin:25px 0 14px}
+.term-quiz-feedback h2{font-size:20px;line-height:1.4;word-break:keep-all}
+.term-quiz-feedback .term-quiz-statement{font-size:16px;padding:16px}
+.term-quiz-answer{font-size:17px;font-weight:700;margin:20px 0 0}
+.term-quiz-answer strong{color:#3182f6;font-size:24px}
+.term-quiz-feedback .explanation-box p+p{margin-top:12px}
+.term-quiz-result{text-align:center;padding-top:44px}
+.term-quiz-kicker{color:#3182f6!important;font-size:14px!important;font-weight:800;margin:0 0 8px!important}
+.term-quiz-result h1{font-size:28px;word-break:keep-all}
+.term-quiz-result>strong{display:block;color:#3182f6;font-size:65px;line-height:1.2}
+.term-quiz-result>p{color:#687890;font-size:16px}
+.term-quiz-result .result-dots{margin:22px 0 37px}
+.term-quiz-result .primary{display:flex;align-items:center;justify-content:center;gap:8px}
