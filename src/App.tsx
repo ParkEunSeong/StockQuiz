@@ -1,14 +1,15 @@
 import { useMemo, useState } from 'react'
-import { ArrowLeft, ArrowRight, BarChart3, BookOpen, Bookmark, Check, CheckCircle2, ChevronRight, CircleHelp, Home, RotateCcw, TrendingUp, UserRound, X } from 'lucide-react'
+import { ArrowLeft, ArrowRight, BarChart3, BookOpen, Bookmark, Check, CheckCircle2, ChevronRight, CircleHelp, Home, RotateCcw, Search, TrendingUp, UserRound, X } from 'lucide-react'
 import { Screen } from '@apps-in-toss/web-framework'
 import rawQuestions from './data/questions.json'
 import PencilFeedback, { PencilOverlay } from './PencilFeedback'
+import Glossary from './Glossary'
 
 type Difficulty = '하' | '중' | '상'
 type Question = { id: string; category: string; difficulty: Difficulty; kind: '4지선다' | 'OX'; prompt: string; options: string[]; answer: number; explanation: string; reference: string }
 type RecordItem = { attempts: number; lastCorrect: boolean; correctCount: number; lastAt: string }
 type Session = { ids: string[]; answers: { id: string; choice: number; correct: boolean }[]; startedAt: number; mode: 'normal' | 'review' }
-type Page = 'home' | 'learn' | 'quiz' | 'explanation' | 'result' | 'notebook' | 'my' | 'ranking'
+type Page = 'home' | 'learn' | 'glossary' | 'quiz' | 'explanation' | 'result' | 'notebook' | 'my' | 'ranking'
 type Store = { records: Record<string, RecordItem>; saved: string[]; sessions: { date: string; correct: number; count: number; seconds: number }[] }
 
 const questions = rawQuestions as Question[]
@@ -140,7 +141,7 @@ function App() {
 
   return <div className={`app-shell ${page === 'learn' ? 'learn-screen' : ''}`}>
     <header className="topbar">
-      {page === 'home' || page === 'learn' || page === 'ranking' || page === 'my' ? <div className="brand"><span className="brand-mark"><BarChart3 size={23} strokeWidth={3} /></span><strong>주식 한입</strong></div> : <button className="icon-button" aria-label="뒤로 가기" onClick={back}><ArrowLeft size={26}/></button>}
+      {page === 'home' || page === 'learn' || page === 'glossary' || page === 'ranking' || page === 'my' ? <div className="brand"><span className="brand-mark"><BarChart3 size={23} strokeWidth={3} /></span><strong>주식 한입</strong></div> : <button className="icon-button" aria-label="뒤로 가기" onClick={back}><ArrowLeft size={26}/></button>}
       <div className="top-actions"><span className="top-dot">•••</span><button className="icon-button close" aria-label="앱 닫기" onClick={closeApp}><X size={25}/></button></div>
     </header>
 
@@ -170,6 +171,8 @@ function App() {
         <div className="selection-summary">{area} · {difficulty === '하' ? '기초' : difficulty === '중' ? '중급' : '고급'} · 5문제</div>
         <button className="primary" onClick={()=>start()}>5문제 시작하기</button>
       </>}
+
+      {page === 'glossary' && <Glossary />}
 
       {page === 'quiz' && session && activeQuestion && <>
         <div className="progress-label"><strong>{session.mode==='review'?'다시 풀기':'오늘의 챌린지'}</strong><span>{session.answers.length+1} <em>/ {session.ids.length}</em></span></div><div className="progress"><span style={{width:`${(session.answers.length+1)/session.ids.length*100}%`}}/></div>
@@ -231,7 +234,7 @@ function App() {
       </>}
     </main>
 
-    {(['home','learn','ranking','my','notebook'] as Page[]).includes(page) && <nav className="bottom-nav"><button className={page==='home'?'active':''} onClick={()=>navigate('home')}><Home size={24}/><span>홈</span></button><button className={page==='learn'?'active':''} onClick={()=>navigate('learn')}><BookOpen size={24}/><span>학습</span></button><button className={page==='ranking'?'active':''} onClick={()=>navigate('ranking')}><BarChart3 size={24}/><span>랭킹</span></button><button className={page==='my'||page==='notebook'?'active':''} onClick={()=>navigate('my')}><UserRound size={24}/><span>내 학습</span></button></nav>}
+    {(['home','learn','glossary','ranking','my','notebook'] as Page[]).includes(page) && <nav className="bottom-nav"><button className={page==='home'?'active':''} onClick={()=>navigate('home')}><Home size={24}/><span>홈</span></button><button className={page==='learn'?'active':''} onClick={()=>navigate('learn')}><BookOpen size={24}/><span>학습</span></button><button className={page==='glossary'?'active':''} onClick={()=>navigate('glossary')}><Search size={24}/><span>용어 사전</span></button><button className={page==='ranking'?'active':''} onClick={()=>navigate('ranking')}><BarChart3 size={24}/><span>랭킹</span></button><button className={page==='my'||page==='notebook'?'active':''} onClick={()=>navigate('my')}><UserRound size={24}/><span>내 학습</span></button></nav>}
   </div>
 }
 
